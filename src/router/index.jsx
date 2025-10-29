@@ -87,3 +87,4 @@ export const router = createBrowserRouter([
 createRoute({ path: "*", element: <NotFound /> }),
     ],
   },
+]);

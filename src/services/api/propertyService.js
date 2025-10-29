@@ -281,5 +281,3 @@ class PropertyService {
 }
 
 export default new PropertyService();
-
-export default new PropertyService();

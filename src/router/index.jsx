@@ -86,5 +86,5 @@ export const router = createBrowserRouter([
       createRoute({ path: "reset-password/:appId/:fields", element: <ResetPassword /> }),
       createRoute({ path: "prompt-password/:appId/:emailAddress/:provider", element: <PromptPassword /> }),
       createRoute({ path: "*", element: <NotFound /> }),
-    ],
+]),
   },

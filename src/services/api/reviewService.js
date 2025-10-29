@@ -392,5 +392,3 @@ class ReviewService {
 }
 
 export default new ReviewService();
-
-export default new ReviewService();

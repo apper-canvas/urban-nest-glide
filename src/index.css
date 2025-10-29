@@ -1,0 +1,74 @@
+@import "react-toastify/dist/ReactToastify.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-body text-gray-800 bg-background;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+/* Toast Overrides */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast {
+  @apply rounded-lg shadow-card-hover font-body;
+  padding: 12px 16px;
+  min-height: 48px;
+}
+
+.Toastify__toast--success {
+  @apply bg-success text-white;
+}
+
+.Toastify__toast--error {
+  @apply bg-error text-white;
+}
+
+.Toastify__toast--info {
+  @apply bg-info text-white;
+}
+
+.Toastify__toast-body {
+  @apply text-sm;
+  padding: 0;
+}
+
+.Toastify__progress-bar {
+  @apply bg-white/30;
+}
+
+/* Star Rating Styles */
+.star-filled {
+  filter: drop-shadow(0 2px 4px rgba(201, 169, 97, 0.3));
+}
+
+.star-hover {
+  transform: scale(1.1);
+}
+
+.star-empty {
+  transition: color 0.2s ease;
+}
+
+/* Review Card Styles */
+.review-card {
+  @apply bg-white rounded-lg border border-gray-200 p-6 space-y-4;
+}
+
+.review-card:hover {
+  @apply shadow-card-hover;
+}
+
+/* Review Form Styles */
+textarea:focus {
+  @apply outline-none ring-2 ring-primary border-transparent;
+}

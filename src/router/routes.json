@@ -29,11 +29,12 @@
       "when": {
         "conditions": [
           {
-            "label": "Property details are public",
-            "rule": "public"
+            "label": "User must be logged in to view property details",
+            "rule": "authenticated"
           }
         ]
-      }
+      },
+      "redirectOnDeny": "/login"
     }
   },
   "/login": {
@@ -45,8 +46,7 @@
             "rule": "public"
           }
         ]
-      },
-      "excludeRedirectQuery": true
+      }
     }
   },
   "/signup": {
@@ -58,8 +58,7 @@
             "rule": "public"
           }
         ]
-      },
-      "excludeRedirectQuery": true
+      }
     }
   },
   "/callback": {
@@ -71,8 +70,7 @@
             "rule": "public"
           }
         ]
-      },
-      "excludeRedirectQuery": true
+      }
     }
   },
   "/error": {
@@ -84,11 +82,10 @@
             "rule": "public"
           }
         ]
-      },
-      "excludeRedirectQuery": true
+      }
     }
   },
-  "/reset-password/*": {
+  "/reset-password/:appId/:fields": {
     "allow": {
       "when": {
         "conditions": [
@@ -97,11 +94,10 @@
             "rule": "public"
           }
         ]
-      },
-      "excludeRedirectQuery": true
+      }
     }
   },
-  "/prompt-password/*": {
+  "/prompt-password/:appId/:emailAddress/:provider": {
     "allow": {
       "when": {
         "conditions": [
@@ -110,8 +106,7 @@
             "rule": "public"
           }
         ]
-      },
-      "excludeRedirectQuery": true
+      }
     }
   }
 }

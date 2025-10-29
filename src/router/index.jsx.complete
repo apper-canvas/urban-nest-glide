@@ -9,13 +9,8 @@ const BrowsePage = lazy(() => import("@/components/pages/BrowsePage"));
 const PropertyDetailPage = lazy(() => import("@/components/pages/PropertyDetailPage"));
 const SavedPage = lazy(() => import("@/components/pages/SavedPage"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
-const Login = lazy(() => import("@/pages/Login"));
-const Signup = lazy(() => import("@/pages/Signup"));
-const Callback = lazy(() => import("@/pages/Callback"));
-const ErrorPage = lazy(() => import("@/pages/ErrorPage"));
-const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
-const PromptPassword = lazy(() => import("@/pages/PromptPassword"));
 
+// Loading fallback component
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
     <div className="text-center space-y-4">
@@ -27,6 +22,7 @@ const LoadingFallback = () => (
   </div>
 );
 
+// Helper to create routes with access configuration
 const createRoute = ({
   path,
   index,
@@ -62,14 +58,22 @@ const createRoute = ({
   return route;
 };
 
+// Auth pages
+const Login = lazy(() => import("@/pages/Login"));
+const Signup = lazy(() => import("@/pages/Signup"));
+const Callback = lazy(() => import("@/pages/Callback"));
+const ErrorPage = lazy(() => import("@/pages/ErrorPage"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+const PromptPassword = lazy(() => import("@/pages/PromptPassword"));
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Suspense fallback={<LoadingFallback />}><Root /></Suspense>,
+    element: <Root />,
     children: [
       {
         path: "/",
-        element: <Suspense fallback={<LoadingFallback />}><Layout /></Suspense>,
+        element: <Layout />,
         children: [
           createRoute({ index: true, element: <BrowsePage /> }),
           createRoute({ path: "saved", element: <SavedPage /> }),

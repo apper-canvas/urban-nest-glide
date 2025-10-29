@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import { lazy, Suspense } from "react";
-import { getRouteConfig } from "./route.utils";
+import React, { Suspense, lazy } from "react";
+import { getRouteConfig } from "@/router/route.utils";
 
-// Lazy load pages
+// Lazy load components
 const Layout = lazy(() => import("@/components/organisms/Layout"));
 const Root = lazy(() => import("@/layouts/Root"));
 const BrowsePage = lazy(() => import("@/components/pages/BrowsePage"));
@@ -10,8 +10,16 @@ const PropertyDetailPage = lazy(() => import("@/components/pages/PropertyDetailP
 const SavedPage = lazy(() => import("@/components/pages/SavedPage"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
 
-// Loading fallback component
-const LoadingFallback = () => (
+// Authentication pages
+const Login = lazy(() => import("@/pages/Login"));
+const Signup = lazy(() => import("@/pages/Signup"));
+const Callback = lazy(() => import("@/pages/Callback"));
+const ErrorPage = lazy(() => import("@/pages/ErrorPage"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+const PromptPassword = lazy(() => import("@/pages/PromptPassword"));
+
+// Loading Spinner Component
+const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
     <div className="text-center space-y-4">
       <svg className="animate-spin h-12 w-12 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -22,7 +30,7 @@ const LoadingFallback = () => (
   </div>
 );
 
-// Helper to create routes with access configuration
+// createRoute Helper Function - EXACT PATTERN REQUIRED
 const createRoute = ({
   path,
   index,
@@ -44,7 +52,7 @@ const createRoute = ({
 
   const route = {
     ...(index ? { index: true } : { path }),
-    element: element ? <Suspense fallback={<LoadingFallback />}>{element}</Suspense> : element,
+    element: element ? <Suspense fallback={<LoadingSpinner />}>{element}</Suspense> : element,
     handle: {
       access: finalAccess,
       ...meta,
@@ -57,15 +65,6 @@ const createRoute = ({
 
   return route;
 };
-
-// Auth pages
-const Login = lazy(() => import("@/pages/Login"));
-const Signup = lazy(() => import("@/pages/Signup"));
-const Callback = lazy(() => import("@/pages/Callback"));
-const ErrorPage = lazy(() => import("@/pages/ErrorPage"));
-const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
-const PromptPassword = lazy(() => import("@/pages/PromptPassword"));
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -89,4 +88,3 @@ export const router = createBrowserRouter([
       createRoute({ path: "*", element: <NotFound /> }),
     ],
   },
-]);

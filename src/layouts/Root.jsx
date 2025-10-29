@@ -129,8 +129,7 @@ export default function Root() {
       }
     }
   };
-
-  const logout = async () => {
+const logout = async () => {
     try {
       dispatch(clearUser());
       navigate("/login");

@@ -282,7 +282,6 @@ class ReviewService {
       throw error;
     }
   }
-
   async getAverageRating(propertyId) {
     try {
       const apperClient = getApperClient();

@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import React, { Suspense, lazy } from "react";
 import { getRouteConfig } from "@/router/route.utils";
-
 // Lazy load components
 const Layout = lazy(() => import("@/components/organisms/Layout"));
 const Root = lazy(() => import("@/layouts/Root"));
@@ -85,6 +84,6 @@ export const router = createBrowserRouter([
       createRoute({ path: "error", element: <ErrorPage /> }),
       createRoute({ path: "reset-password/:appId/:fields", element: <ResetPassword /> }),
       createRoute({ path: "prompt-password/:appId/:emailAddress/:provider", element: <PromptPassword /> }),
-      createRoute({ path: "*", element: <NotFound /> }),
-]),
+createRoute({ path: "*", element: <NotFound /> }),
+    ],
   },

@@ -1,24 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
-import React, { Suspense, lazy } from "react";
-import { getRouteConfig } from "@/router/route.utils";
-// Lazy load components
-const Layout = lazy(() => import("@/components/organisms/Layout"));
-const Root = lazy(() => import("@/layouts/Root"));
+import { lazy, Suspense } from "react";
+import Layout from "@/components/organisms/Layout";
+
 const BrowsePage = lazy(() => import("@/components/pages/BrowsePage"));
 const PropertyDetailPage = lazy(() => import("@/components/pages/PropertyDetailPage"));
 const SavedPage = lazy(() => import("@/components/pages/SavedPage"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
 
-// Authentication pages
-const Login = lazy(() => import("@/pages/Login"));
-const Signup = lazy(() => import("@/pages/Signup"));
-const Callback = lazy(() => import("@/pages/Callback"));
-const ErrorPage = lazy(() => import("@/pages/ErrorPage"));
-const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
-const PromptPassword = lazy(() => import("@/pages/PromptPassword"));
-
-// Loading Spinner Component
-const LoadingSpinner = () => (
+const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
     <div className="text-center space-y-4">
       <svg className="animate-spin h-12 w-12 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -29,62 +18,32 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// createRoute Helper Function - EXACT PATTERN REQUIRED
-const createRoute = ({
-  path,
-  index,
-  element,
-  access,
-  children,
-  ...meta
-}) => {
-  // Get config for this route
-  let configPath;
-  if (index) {
-    configPath = "/";
-  } else {
-    configPath = path.startsWith('/') ? path : `/${path}`;
+const mainRoutes = [
+  {
+    path: "",
+    index: true,
+    element: <Suspense fallback={<LoadingFallback />}><BrowsePage /></Suspense>
+  },
+  {
+    path: "property/:id",
+    element: <Suspense fallback={<LoadingFallback />}><PropertyDetailPage /></Suspense>
+  },
+  {
+    path: "saved",
+    element: <Suspense fallback={<LoadingFallback />}><SavedPage /></Suspense>
+  },
+  {
+    path: "*",
+    element: <Suspense fallback={<LoadingFallback />}><NotFound /></Suspense>
   }
+];
 
-  const config = getRouteConfig(configPath);
-  const finalAccess = access || config?.allow;
-
-  const route = {
-    ...(index ? { index: true } : { path }),
-    element: element ? <Suspense fallback={<LoadingSpinner />}>{element}</Suspense> : element,
-    handle: {
-      access: finalAccess,
-      ...meta,
-    },
-  };
-
-  if (children && children.length > 0) {
-    route.children = children;
-  }
-
-  return route;
-};
-export const router = createBrowserRouter([
+const routes = [
   {
     path: "/",
-    element: <Root />,
-    children: [
-      {
-        path: "/",
-        element: <Layout />,
-        children: [
-          createRoute({ index: true, element: <BrowsePage /> }),
-          createRoute({ path: "saved", element: <SavedPage /> }),
-          createRoute({ path: "property/:id", element: <PropertyDetailPage /> }),
-        ],
-      },
-      createRoute({ path: "login", element: <Login /> }),
-      createRoute({ path: "signup", element: <Signup /> }),
-      createRoute({ path: "callback", element: <Callback /> }),
-      createRoute({ path: "error", element: <ErrorPage /> }),
-      createRoute({ path: "reset-password/:appId/:fields", element: <ResetPassword /> }),
-      createRoute({ path: "prompt-password/:appId/:emailAddress/:provider", element: <PromptPassword /> }),
-createRoute({ path: "*", element: <NotFound /> }),
-    ],
-  },
-]);
+    element: <Layout />,
+    children: [...mainRoutes]
+  }
+];
+
+export const router = createBrowserRouter(routes);

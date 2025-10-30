@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
-import reviewService from "@/services/api/reviewService";
 import propertyService from "@/services/api/propertyService";
 import favoritesService from "@/services/api/favoritesService";
+import reviewService from "@/services/api/reviewService";
 import ApperIcon from "@/components/ApperIcon";
 import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
@@ -14,11 +13,11 @@ import ImageGallery from "@/components/organisms/ImageGallery";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import PriceTag from "@/components/molecules/PriceTag";
-import ReviewForm from "@/components/molecules/ReviewForm";
-import ReviewCard from "@/components/molecules/ReviewCard";
 import PropertyStats from "@/components/molecules/PropertyStats";
 import FavoriteButton from "@/components/molecules/FavoriteButton";
 import StarRating from "@/components/molecules/StarRating";
+import ReviewForm from "@/components/molecules/ReviewForm";
+import ReviewCard from "@/components/molecules/ReviewCard";
 const ContactDialog = ({ isOpen, onClose, type, propertyTitle }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -220,13 +219,12 @@ const ContactDialog = ({ isOpen, onClose, type, propertyTitle }) => {
 };
 
 const PropertyDetailPage = () => {
-const { id } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.user);
-  const [property, setProperty] = useState(null);
+const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isFavorite, setIsFavorite] = useState(false);
+const [isFavorite, setIsFavorite] = useState(false);
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [contactType, setContactType] = useState("message");
   const [reviews, setReviews] = useState([]);
@@ -482,9 +480,9 @@ const handleContact = () => {
                 <div className="space-y-4">
                   {reviews.map((review) => (
                     <ReviewCard
-key={review.Id}
+                      key={review.Id}
                       review={review}
-                      currentUserId={user?.userId || user?.UserId}
+                      currentUserId={999}
                       onEdit={handleEditReview}
                       onDelete={handleDeleteReview}
                     />

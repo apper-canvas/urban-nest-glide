@@ -1,392 +1,119 @@
-import { getApperClient } from "@/services/apperClient";
+import reviewsData from '../mockData/reviews.json';
+
+// Simulate async delay
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 class ReviewService {
+  constructor() {
+    this.reviews = [...reviewsData];
+    this.nextId = Math.max(...this.reviews.map(r => r.Id), 0) + 1;
+  }
+
   async getAll() {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error("ApperClient not initialized");
-      }
-
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "property_id_c" }, referenceField: { field: { Name: "Name" } } },
-          { field: { Name: "user_id_c" } },
-          { field: { Name: "user_name_c" } },
-          { field: { Name: "user_avatar_c" } },
-          { field: { Name: "rating_c" } },
-          { field: { Name: "comment_c" } },
-          { field: { Name: "date_c" } }
-        ],
-        pagingInfo: { limit: 100, offset: 0 }
-      };
-
-      const response = await apperClient.fetchRecords("review_c", params);
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to fetch reviews");
-      }
-
-      return (response.data || []).map(this._transformReview);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      throw error;
-    }
+    await delay(500);
+    return [...this.reviews];
   }
 
   async getByPropertyId(propertyId) {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error("ApperClient not initialized");
-      }
-
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "property_id_c" }, referenceField: { field: { Name: "Name" } } },
-          { field: { Name: "user_id_c" } },
-          { field: { Name: "user_name_c" } },
-          { field: { Name: "user_avatar_c" } },
-          { field: { Name: "rating_c" } },
-          { field: { Name: "comment_c" } },
-          { field: { Name: "date_c" } }
-        ],
-        where: [
-          {
-            FieldName: "property_id_c",
-            Operator: "EqualTo",
-            Values: [parseInt(propertyId)]
-          }
-        ],
-        orderBy: [{ fieldName: "date_c", sorttype: "DESC" }],
-        pagingInfo: { limit: 100, offset: 0 }
-      };
-
-      const response = await apperClient.fetchRecords("review_c", params);
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to fetch reviews");
-      }
-
-      return (response.data || []).map(this._transformReview);
-    } catch (error) {
-      console.error(`Error fetching reviews for property ${propertyId}:`, error);
-      throw error;
-    }
+    await delay(500);
+    const propertyReviews = this.reviews.filter(r => r.propertyId === Number(propertyId));
+    return propertyReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
   }
 
   async getById(id) {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error("ApperClient not initialized");
-      }
-
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "property_id_c" }, referenceField: { field: { Name: "Name" } } },
-          { field: { Name: "user_id_c" } },
-          { field: { Name: "user_name_c" } },
-          { field: { Name: "user_avatar_c" } },
-          { field: { Name: "rating_c" } },
-          { field: { Name: "comment_c" } },
-          { field: { Name: "date_c" } }
-        ]
-      };
-
-      const response = await apperClient.getRecordById("review_c", parseInt(id), params);
-
-      if (!response.success) {
-        throw new Error(response.message || "Review not found");
-      }
-
-      if (!response.data) {
-        throw new Error("Review not found");
-      }
-
-      return this._transformReview(response.data);
-    } catch (error) {
-      console.error(`Error fetching review ${id}:`, error);
-      throw error;
+    await delay(500);
+    const review = this.reviews.find(r => r.Id === Number(id));
+    if (!review) {
+      throw new Error('Review not found');
     }
+    return { ...review };
   }
 
   async create(reviewData) {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error("ApperClient not initialized");
-      }
-
-      // Validate required fields
-      if (!reviewData.propertyId || !reviewData.rating || !reviewData.comment) {
-        throw new Error("Missing required fields");
-      }
-
-      if (reviewData.rating < 1 || reviewData.rating > 5) {
-        throw new Error("Rating must be between 1 and 5");
-      }
-
-      const params = {
-        records: [
-          {
-            property_id_c: parseInt(reviewData.propertyId),
-            user_id_c: reviewData.userId || 999,
-            user_name_c: reviewData.userName || "Anonymous User",
-            user_avatar_c: reviewData.userAvatar || "AU",
-            rating_c: parseInt(reviewData.rating),
-            comment_c: reviewData.comment.trim(),
-            date_c: new Date().toISOString()
-          }
-        ]
-      };
-
-      const response = await apperClient.createRecord("review_c", params);
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to create review");
-      }
-
-      if (response.results) {
-        const successful = response.results.filter(r => r.success);
-        const failed = response.results.filter(r => !r.success);
-
-        if (failed.length > 0) {
-          console.error(`Failed to create ${failed.length} reviews:`, failed);
-          failed.forEach(record => {
-            if (record.errors) {
-              record.errors.forEach(error => {
-                throw new Error(error.message || error);
-              });
-            }
-            if (record.message) {
-              throw new Error(record.message);
-            }
-          });
-        }
-
-        if (successful.length > 0) {
-          return this._transformReview(successful[0].data);
-        }
-      }
-
-      throw new Error("Failed to create review");
-    } catch (error) {
-      console.error("Error creating review:", error);
-      throw error;
+    await delay(500);
+    
+    // Validate required fields
+    if (!reviewData.propertyId || !reviewData.rating || !reviewData.comment) {
+      throw new Error('Missing required fields');
     }
+
+    if (reviewData.rating < 1 || reviewData.rating > 5) {
+      throw new Error('Rating must be between 1 and 5');
+    }
+
+    const newReview = {
+      Id: this.nextId++,
+      propertyId: Number(reviewData.propertyId),
+      userId: reviewData.userId || Math.floor(Math.random() * 1000) + 200,
+      userName: reviewData.userName || 'Anonymous User',
+      userAvatar: reviewData.userAvatar || reviewData.userName?.split(' ').map(n => n[0]).join('') || 'AU',
+      rating: Number(reviewData.rating),
+      comment: reviewData.comment.trim(),
+      date: new Date().toISOString()
+    };
+
+    this.reviews.push(newReview);
+    return { ...newReview };
   }
 
   async update(id, updateData) {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error("ApperClient not initialized");
-      }
-
-      if (updateData.rating && (updateData.rating < 1 || updateData.rating > 5)) {
-        throw new Error("Rating must be between 1 and 5");
-      }
-
-      const record = {
-        Id: parseInt(id)
-      };
-
-      if (updateData.rating) {
-        record.rating_c = parseInt(updateData.rating);
-      }
-
-      if (updateData.comment) {
-        record.comment_c = updateData.comment.trim();
-      }
-
-      const params = {
-        records: [record]
-      };
-
-      const response = await apperClient.updateRecord("review_c", params);
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to update review");
-      }
-
-      if (response.results) {
-        const successful = response.results.filter(r => r.success);
-        const failed = response.results.filter(r => !r.success);
-
-        if (failed.length > 0) {
-          console.error(`Failed to update ${failed.length} reviews:`, failed);
-          failed.forEach(record => {
-            if (record.errors) {
-              record.errors.forEach(error => {
-                throw new Error(error.message || error);
-              });
-            }
-            if (record.message) {
-              throw new Error(record.message);
-            }
-          });
-        }
-
-        if (successful.length > 0) {
-          return this._transformReview(successful[0].data);
-        }
-      }
-
-      throw new Error("Failed to update review");
-    } catch (error) {
-      console.error(`Error updating review ${id}:`, error);
-      throw error;
+    await delay(500);
+    
+    const index = this.reviews.findIndex(r => r.Id === Number(id));
+    if (index === -1) {
+      throw new Error('Review not found');
     }
+
+    if (updateData.rating && (updateData.rating < 1 || updateData.rating > 5)) {
+      throw new Error('Rating must be between 1 and 5');
+    }
+
+    const updatedReview = {
+      ...this.reviews[index],
+      ...(updateData.rating && { rating: Number(updateData.rating) }),
+      ...(updateData.comment && { comment: updateData.comment.trim() }),
+      date: new Date().toISOString()
+    };
+
+    this.reviews[index] = updatedReview;
+    return { ...updatedReview };
   }
 
   async delete(id) {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error("ApperClient not initialized");
-      }
-
-      const params = {
-        RecordIds: [parseInt(id)]
-      };
-
-      const response = await apperClient.deleteRecord("review_c", params);
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to delete review");
-      }
-
-      if (response.results) {
-        const successful = response.results.filter(r => r.success);
-        const failed = response.results.filter(r => !r.success);
-
-        if (failed.length > 0) {
-          console.error(`Failed to delete ${failed.length} reviews:`, failed);
-          failed.forEach(record => {
-            if (record.message) {
-              throw new Error(record.message);
-            }
-          });
-        }
-
-        return successful.length > 0;
-      }
-
-      return true;
-    } catch (error) {
-      console.error(`Error deleting review ${id}:`, error);
-      throw error;
+    await delay(500);
+    
+    const index = this.reviews.findIndex(r => r.Id === Number(id));
+    if (index === -1) {
+      throw new Error('Review not found');
     }
+
+    const deletedReview = { ...this.reviews[index] };
+    this.reviews.splice(index, 1);
+    return deletedReview;
   }
+
   async getAverageRating(propertyId) {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error("ApperClient not initialized");
-      }
-
-      const params = {
-        fields: [{ field: { Name: "rating_c" } }],
-        where: [
-          {
-            FieldName: "property_id_c",
-            Operator: "EqualTo",
-            Values: [parseInt(propertyId)]
-          }
-        ],
-        aggregators: [
-          {
-            id: "avgRating",
-            fields: [{ field: { Name: "rating_c" }, Function: "Count" }],
-            where: []
-          }
-        ],
-        pagingInfo: { limit: 100, offset: 0 }
-      };
-
-      const response = await apperClient.fetchRecords("review_c", params);
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to fetch average rating");
-      }
-
-      const reviews = response.data || [];
-      const count = reviews.length;
-
-      if (count === 0) {
-        return { average: 0, count: 0 };
-      }
-
-      const sum = reviews.reduce((acc, review) => acc + (review.rating_c || 0), 0);
-      const average = sum / count;
-
-      return {
-        average: Math.round(average * 10) / 10,
-        count: count
-      };
-    } catch (error) {
-      console.error(`Error fetching average rating for property ${propertyId}:`, error);
-      throw error;
+    await delay(300);
+    const propertyReviews = this.reviews.filter(r => r.propertyId === Number(propertyId));
+    
+    if (propertyReviews.length === 0) {
+      return { average: 0, count: 0 };
     }
+
+    const sum = propertyReviews.reduce((acc, review) => acc + review.rating, 0);
+    const average = sum / propertyReviews.length;
+    
+    return {
+      average: Math.round(average * 10) / 10,
+      count: propertyReviews.length
+    };
   }
 
   async getUserReviews(userId) {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error("ApperClient not initialized");
-      }
-
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "property_id_c" }, referenceField: { field: { Name: "Name" } } },
-          { field: { Name: "user_id_c" } },
-          { field: { Name: "user_name_c" } },
-          { field: { Name: "user_avatar_c" } },
-          { field: { Name: "rating_c" } },
-          { field: { Name: "comment_c" } },
-          { field: { Name: "date_c" } }
-        ],
-        where: [
-          {
-            FieldName: "user_id_c",
-            Operator: "EqualTo",
-            Values: [parseInt(userId)]
-          }
-        ],
-        orderBy: [{ fieldName: "date_c", sorttype: "DESC" }],
-        pagingInfo: { limit: 100, offset: 0 }
-      };
-
-      const response = await apperClient.fetchRecords("review_c", params);
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to fetch user reviews");
-      }
-
-      return (response.data || []).map(this._transformReview);
-    } catch (error) {
-      console.error(`Error fetching reviews for user ${userId}:`, error);
-      throw error;
-    }
-  }
-
-  _transformReview(review) {
-    return {
-      Id: review.Id,
-      propertyId: review.property_id_c?.Id || review.property_id_c,
-      userId: review.user_id_c || 0,
-      userName: review.user_name_c || "Anonymous",
-      userAvatar: review.user_avatar_c || "A",
-      rating: review.rating_c || 0,
-      comment: review.comment_c || "",
-      date: review.date_c || new Date().toISOString()
-    };
+    await delay(500);
+    return this.reviews
+      .filter(r => r.userId === Number(userId))
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
   }
 }
 

@@ -1,0 +1,152 @@
+[
+  {
+    "Id": 1,
+    "propertyId": 1,
+    "userId": 101,
+    "userName": "Sarah Johnson",
+    "userAvatar": "SJ",
+    "rating": 5,
+    "comment": "Absolutely stunning property! The modern design and attention to detail are exceptional. The location is perfect for city living, and the building amenities exceeded my expectations. Highly recommend!",
+    "date": "2024-01-15T10:30:00Z"
+  },
+  {
+    "Id": 2,
+    "propertyId": 1,
+    "userId": 102,
+    "userName": "Michael Chen",
+    "userAvatar": "MC",
+    "rating": 4,
+    "comment": "Great property overall. The space is well-designed and the neighborhood is fantastic. Only minor issue was the parking situation, but everything else was perfect.",
+    "date": "2024-01-18T14:20:00Z"
+  },
+  {
+    "Id": 3,
+    "propertyId": 1,
+    "userId": 103,
+    "userName": "Emily Rodriguez",
+    "userAvatar": "ER",
+    "rating": 5,
+    "comment": "I've been living here for 3 months now and couldn't be happier. The building management is responsive, neighbors are friendly, and the location is unbeatable. Worth every penny!",
+    "date": "2024-01-22T09:15:00Z"
+  },
+  {
+    "Id": 4,
+    "propertyId": 1,
+    "userId": 104,
+    "userName": "David Kim",
+    "userAvatar": "DK",
+    "rating": 4,
+    "comment": "Beautiful property with excellent amenities. The gym and pool are top-notch. The only reason for 4 stars instead of 5 is the occasional noise from the street, but it's manageable.",
+    "date": "2024-01-25T16:45:00Z"
+  },
+  {
+    "Id": 5,
+    "propertyId": 1,
+    "userId": 105,
+    "userName": "Jessica Williams",
+    "userAvatar": "JW",
+    "rating": 5,
+    "comment": "This place exceeded all my expectations. The natural light, modern finishes, and smart home features make it feel like a luxury hotel. The concierge service is also incredibly helpful.",
+    "date": "2024-01-28T11:30:00Z"
+  },
+  {
+    "Id": 6,
+    "propertyId": 2,
+    "userId": 106,
+    "userName": "Robert Taylor",
+    "userAvatar": "RT",
+    "rating": 5,
+    "comment": "Charming Victorian with so much character! The restoration work is impeccable, and the modern updates blend seamlessly with the historic features. The garden is a peaceful oasis.",
+    "date": "2024-01-20T13:00:00Z"
+  },
+  {
+    "Id": 7,
+    "propertyId": 2,
+    "userId": 107,
+    "userName": "Amanda Martinez",
+    "userAvatar": "AM",
+    "rating": 4,
+    "comment": "Love the historic charm and the neighborhood is absolutely gorgeous. The only downside is the heating system can be a bit finicky in winter, but the character of the place makes up for it.",
+    "date": "2024-01-23T10:20:00Z"
+  },
+  {
+    "Id": 8,
+    "propertyId": 2,
+    "userId": 108,
+    "userName": "Christopher Lee",
+    "userAvatar": "CL",
+    "rating": 5,
+    "comment": "This Victorian gem is absolutely worth it. The craftsmanship in the woodwork and original features is stunning. The location is perfect for walking to cafes and shops.",
+    "date": "2024-01-26T15:40:00Z"
+  },
+  {
+    "Id": 9,
+    "propertyId": 2,
+    "userId": 109,
+    "userName": "Nicole Anderson",
+    "userAvatar": "NA",
+    "rating": 4,
+    "comment": "Beautiful property with lots of character. The high ceilings and original fireplaces are amazing. Storage could be better, but that's typical for historic homes.",
+    "date": "2024-01-29T12:10:00Z"
+  },
+  {
+    "Id": 10,
+    "propertyId": 2,
+    "userId": 110,
+    "userName": "James Wilson",
+    "userAvatar": "JW",
+    "rating": 5,
+    "comment": "Simply perfect! Every detail has been thoughtfully restored. The kitchen renovation is particularly impressive - modern functionality while maintaining period charm.",
+    "date": "2024-02-01T14:30:00Z"
+  },
+  {
+    "Id": 11,
+    "propertyId": 3,
+    "userId": 111,
+    "userName": "Sophia Brown",
+    "userAvatar": "SB",
+    "rating": 5,
+    "comment": "The penthouse views are absolutely breathtaking! Waking up to the city skyline every morning never gets old. The rooftop terrace is perfect for entertaining.",
+    "date": "2024-01-24T09:45:00Z"
+  },
+  {
+    "Id": 12,
+    "propertyId": 3,
+    "userId": 112,
+    "userName": "Daniel Garcia",
+    "userAvatar": "DG",
+    "rating": 4,
+    "comment": "Stunning property with incredible views. The floor-to-ceiling windows are amazing. Premium price but the quality and location justify it. Wind can be strong on the terrace though.",
+    "date": "2024-01-27T11:20:00Z"
+  },
+  {
+    "Id": 13,
+    "propertyId": 3,
+    "userId": 113,
+    "userName": "Olivia Thompson",
+    "userAvatar": "OT",
+    "rating": 5,
+    "comment": "Living in this penthouse is like a dream. The smart home integration is seamless, the chef's kitchen is incredible, and the primary suite is pure luxury. Can't recommend enough!",
+    "date": "2024-01-30T16:00:00Z"
+  },
+  {
+    "Id": 14,
+    "propertyId": 3,
+    "userId": 114,
+    "userName": "Matthew Harris",
+    "userAvatar": "MH",
+    "rating": 5,
+    "comment": "This is luxury living at its finest. Every finish is high-end, the building amenities are exceptional, and the concierge service is outstanding. The sunset views from the terrace are unmatched.",
+    "date": "2024-02-02T13:15:00Z"
+  },
+  {
+    "Id": 15,
+    "propertyId": 3,
+    "userId": 115,
+    "userName": "Isabella Clark",
+    "userAvatar": "IC",
+    "rating": 4,
+    "comment": "Spectacular penthouse with amazing attention to detail. The space is beautifully designed and the views are incredible. Only giving 4 stars because the elevator wait times can be long during peak hours.",
+    "date": "2024-02-05T10:30:00Z"
+  }
+]

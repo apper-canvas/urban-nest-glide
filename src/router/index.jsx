@@ -1,5 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import React, { Suspense, lazy } from "react";
+import Root from "@/layouts/Root";
+import { getRouteConfig } from "./route.utils";
 import Layout from "@/components/organisms/Layout";
 
 const BrowsePage = lazy(() => import("@/components/pages/BrowsePage"));
@@ -18,31 +20,63 @@ const LoadingFallback = () => (
   </div>
 );
 
-const mainRoutes = [
-  {
-    path: "",
-    index: true,
-    element: <Suspense fallback={<LoadingFallback />}><BrowsePage /></Suspense>
-  },
-  {
-    path: "property/:id",
-    element: <Suspense fallback={<LoadingFallback />}><PropertyDetailPage /></Suspense>
-  },
-  {
-    path: "saved",
-    element: <Suspense fallback={<LoadingFallback />}><SavedPage /></Suspense>
-  },
-  {
-    path: "*",
-    element: <Suspense fallback={<LoadingFallback />}><NotFound /></Suspense>
+const createRoute = ({ path, index, element, access, children, ...meta }) => {
+  // Get config for this route
+  let configPath;
+  if (index) {
+    configPath = "/";
+  } else {
+    configPath = path.startsWith('/') ? path : `/${path}`;
   }
+
+  const config = getRouteConfig(configPath);
+  const finalAccess = access || config?.allow;
+
+  const route = {
+    ...(index ? { index: true } : { path }),
+    element: element ? <Suspense fallback={<LoadingFallback />}>{element}</Suspense> : element,
+    handle: {
+      access: finalAccess,
+      ...meta,
+    },
+  };
+
+  if (children && children.length > 0) {
+    route.children = children;
+  }
+
+  return route;
+};
+const mainRoutes = [
+  createRoute({
+    index: true,
+    element: <BrowsePage />
+  }),
+  createRoute({
+    path: "property/:id",
+    element: <PropertyDetailPage />
+  }),
+  createRoute({
+    path: "saved",
+    element: <SavedPage />
+  }),
+  createRoute({
+    path: "*",
+    element: <NotFound />
+  })
 ];
 
 const routes = [
   {
     path: "/",
-    element: <Layout />,
-    children: [...mainRoutes]
+    element: <Root />,
+    children: [
+      {
+        path: "/",
+        element: <Layout />,
+        children: [...mainRoutes]
+      }
+    ]
   }
 ];
 

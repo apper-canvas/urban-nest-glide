@@ -1,0 +1,50 @@
+{
+  "/": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Homepage is public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  },
+  "/property/:id": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Property details are public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  },
+  "/saved": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Saved properties page is public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  },
+  "*": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Not found page is public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  }
+}

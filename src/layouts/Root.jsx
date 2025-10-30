@@ -1,9 +1,10 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState, createContext, useContext } from "react";
-import { setUser, clearUser, setInitialized } from "@/store/userSlice";
-import { getRouteConfig, verifyRouteAccess } from "@/router/route.utils";
+import { useDispatch, useSelector } from "react-redux";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { getApperClient } from "@/services/apperClient";
+import Error from "@/components/ui/Error";
+import { clearUser, setInitialized, setUser } from "@/store/userSlice";
+import { getRouteConfig, verifyRouteAccess } from "@/router/route.utils";
 
 // Auth context for logout functionality
 const AuthContext = createContext(null);
@@ -62,10 +63,53 @@ export default function Root() {
     navigate(redirectUrl, { replace: true });
   }, [isInitialized, user, location.pathname, location.search, navigate]);
 
+const waitForSDK = async () => {
+    const maxAttempts = 10;
+    const baseDelay = 100;
+    
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      if (window.ApperSDK) {
+        return true;
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, baseDelay * attempt));
+    }
+    
+    return false;
+  };
+
+  const handleAuthSuccess = (userData) => {
+    if (userData) {
+      dispatch(setUser(userData));
+    }
+    dispatch(setInitialized(true));
+    setAuthInitialized(true);
+  };
+
+  const handleAuthError = (error) => {
+    console.error('Authentication error:', error);
+    dispatch(clearUser());
+    dispatch(setInitialized(true));
+    setAuthInitialized(true);
+  };
+
+  const handleAuthComplete = () => {
+    dispatch(setInitialized(true));
+    setAuthInitialized(true);
+  };
+
   const initializeAuth = async () => {
     try {
-      // Wait for SDK to load and get client
-      const apperClient = await getApperClient();
+      const sdkAvailable = await waitForSDK();
+      
+      if (!sdkAvailable) {
+        console.error('ApperSDK failed to load within timeout period');
+        dispatch(clearUser());
+        handleAuthComplete();
+        return;
+      }
+
+      const apperClient = getApperClient();
 
       if (!apperClient || !window.ApperSDK) {
         console.error('Failed to initialize ApperSDK or ApperClient');
@@ -87,38 +131,6 @@ export default function Root() {
     } catch (error) {
       console.error('Failed to initialize authentication:', error);
       dispatch(clearUser());
-      handleAuthComplete();
-    }
-  };
-
-  const handleAuthSuccess = (user) => {
-    if (user) {
-      handleNavigation();
-    } else {
-      dispatch(clearUser());
-    }
-    handleAuthComplete();
-  };
-
-  const handleAuthError = (error) => {
-    console.error("Auth error:", error);
-    dispatch(clearUser());
-    handleAuthComplete();
-  };
-
-  const handleAuthComplete = () => {
-    setAuthInitialized(true); // Local loading state
-    dispatch(setInitialized(true)); // Redux state for route guards
-  };
-
-  const handleNavigation = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirectPath = urlParams.get("redirect");
-
-    if (redirectPath) {
-      navigate(redirectPath);
-    } else {
-      // Navigate to home only if on auth pages
       const authPages = ["/login", "/signup", "/callback"];
       const isOnAuthPage = authPages.some(page =>
         window.location.pathname.includes(page)
@@ -126,6 +138,7 @@ export default function Root() {
       if (isOnAuthPage) {
         navigate("/");
       }
+      handleAuthComplete();
     }
   };
 

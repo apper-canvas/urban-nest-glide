@@ -64,17 +64,29 @@ export default function Root() {
   }, [isInitialized, user, location.pathname, location.search, navigate]);
 
 const waitForSDK = async () => {
-    const maxAttempts = 10;
+    const maxAttempts = 50; // Try for ~5 seconds total
     const baseDelay = 100;
     
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       if (window.ApperSDK) {
+        console.log('ApperSDK loaded successfully');
         return true;
       }
       
-      await new Promise(resolve => setTimeout(resolve, baseDelay * attempt));
+      // Progressive backoff: 100ms, then increasing by 50ms each attempt
+      const delay = baseDelay + (Math.floor(attempt / 5) * 50);
+      
+      if (attempt % 10 === 0) {
+        console.warn(`Still waiting for ApperSDK... (attempt ${attempt}/${maxAttempts})`);
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
     
+    console.error(
+      'ApperSDK failed to load. Please ensure the SDK script tag is present in index.html: ' +
+      '<script src="%VITE_APPER_SDK_CDN_URL%"></script>'
+    );
     return false;
   };
 

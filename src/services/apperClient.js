@@ -8,15 +8,23 @@ class ApperClientSingleton {
     this._isInitializing = false;
   }
 
+/**
+   * Get the ApperClient instance synchronously.
+   * Returns null if SDK not yet loaded - caller should use waitForSDK in Root.jsx first.
+   * @returns {ApperClient|null}
+   */
   getInstance() {
     // Return cached instance if exists
     if (this._client) {
       return this._client;
     }
 
-    // SDK not loaded yet
+    // SDK not loaded yet - Root.jsx should call waitForSDK before this
     if (!window.ApperSDK) {
-      console.warn('ApperSDK not available on window object');
+      console.warn(
+        'ApperSDK not available on window object. ' +
+        'Ensure SDK script tag is in index.html and waitForSDK is called first.'
+      );
       return null;
     }
 
@@ -28,10 +36,10 @@ class ApperClientSingleton {
     try {
       this._isInitializing = true;
       
+// SDK is available, proceed with initialization
       const { ApperClient } = window.ApperSDK;
       const projectId = import.meta.env.VITE_APPER_PROJECT_ID;
       const publicKey = import.meta.env.VITE_APPER_PUBLIC_KEY;
-
       if (!projectId) {
         console.error('VITE_APPER_PROJECT_ID is required');
         return null;
